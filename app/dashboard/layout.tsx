@@ -1,6 +1,6 @@
 import SideNav from '@/app/ui/dashboard/sidenav';
 
-export const experimental_ppr = true;
+// export const experimental_ppr = true; // results in error during build -> can only be used with the latest canary version of next.js
 
 export default function Layout({ children }: { children: React.ReactNode }) {
   return (
