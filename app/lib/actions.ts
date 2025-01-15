@@ -100,7 +100,7 @@ WHERE id = ${id}
   redirect("/dashboard/invoices");
 }
 
-export async function deleteInvoice(id: string) {
+export async function deleteInvoice(id: string, prevState: State): Promise<State> {
   try {
     await client2.sql`
     DELETE FROM invoices
@@ -111,4 +111,5 @@ export async function deleteInvoice(id: string) {
   }
 
   revalidatePath("/dashboard/invoices");
+  return prevState;
 }
