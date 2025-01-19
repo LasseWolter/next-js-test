@@ -4,8 +4,8 @@ import { z } from "zod";
 import { db } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
-import { signIn} from '@/auth';
-import {AuthError} from 'next-auth';
+import { signIn } from "@/auth";
+import { AuthError } from "next-auth";
 
 const client2 = await db.connect();
 
@@ -102,7 +102,10 @@ WHERE id = ${id}
   redirect("/dashboard/invoices");
 }
 
-export async function deleteInvoice(id: string, prevState: State): Promise<State> {
+export async function deleteInvoice(
+  id: string,
+  prevState: State,
+): Promise<State> {
   try {
     await client2.sql`
     DELETE FROM invoices
@@ -119,16 +122,16 @@ export async function deleteInvoice(id: string, prevState: State): Promise<State
 export async function authenticate(
   prevState: string | undefined,
   formData: FormData,
-) {
+): Promise<string> {
   try {
-    await signIn('credentials', formData);
+    await signIn("credentials", formData);
   } catch (error) {
     if (error instanceof AuthError) {
       switch (error.type) {
-        case 'CredentialsSignin':
-          return 'Invalid credentials.';
+        case "CredentialsSignin":
+          return "Invalid credentials.";
         default:
-          return 'Something went wrong.';
+          return "Something went wrong.";
       }
     }
     throw error;
