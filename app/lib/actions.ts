@@ -4,6 +4,8 @@ import { z } from "zod";
 import { db } from "@vercel/postgres";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { signIn} from '@/auth';
+import {AuthError} from 'next-auth';
 
 const client2 = await db.connect();
 
@@ -112,4 +114,23 @@ export async function deleteInvoice(id: string, prevState: State): Promise<State
 
   revalidatePath("/dashboard/invoices");
   return prevState;
+}
+
+export async function authenticate(
+  prevState: string | undefined,
+  formData: FormData,
+) {
+  try {
+    await signIn('credentials', formData);
+  } catch (error) {
+    if (error instanceof AuthError) {
+      switch (error.type) {
+        case 'CredentialsSignin':
+          return 'Invalid credentials.';
+        default:
+          return 'Something went wrong.';
+      }
+    }
+    throw error;
+  }
 }
